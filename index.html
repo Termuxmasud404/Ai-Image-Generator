@@ -37,6 +37,20 @@
       color: #333;
     }
     label { font-weight: bold; }
+    .spinner {
+      display: none;
+      margin: 10px auto;
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -46,16 +60,17 @@
 
 <label>X:</label> <input type="number" id="bgX" value="0" style="width: 60px;"> <label>Y:</label> <input type="number" id="bgY" value="0" style="width: 60px;"> <label>Width:</label> <input type="number" id="bgW" value="512" style="width: 80px;"> <label>Height:</label> <input type="number" id="bgH" value="512" style="width: 80px;"><br>
 
-<button onclick="removeBackground()">Remove Background</button> <button onclick="changeBackground()">Change Background Color</button> <button onclick="applyCustomBackground()">Apply Custom Background</button> <button onclick="downloadImage()">Download Image</button>
+<button onclick="withLoading(removeBackground)">Remove Background</button> <button onclick="withLoading(changeBackground)">Change Background Color</button> <button onclick="withLoading(applyCustomBackground)">Apply Custom Background</button> <button onclick="withLoading(downloadImage)">Download Image</button>
 
-  <br>
-  <canvas id="canvas"></canvas>  <div class="footer">Developer By Masud Rana</div>  <script>
+  <div class="spinner" id="spinner"></div><canvas id="canvas"></canvas>
+
+  <div class="footer">Developer By Masud Rana</div>  <script>
     const upload = document.getElementById('upload');
     const customBg = document.getElementById('customBg');
     const canvas = document.getElementById('canvas');
+    const spinner = document.getElementById('spinner');
     const ctx = canvas.getContext('2d');
     let originalImage = new Image();
-    let imageData;
 
     upload.addEventListener('change', (e) => {
       const reader = new FileReader();
@@ -69,8 +84,15 @@
       canvas.width = originalImage.width;
       canvas.height = originalImage.height;
       ctx.drawImage(originalImage, 0, 0);
-      imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     };
+
+    function withLoading(action) {
+      spinner.style.display = 'block';
+      setTimeout(() => {
+        action();
+        spinner.style.display = 'none';
+      }, 100);
+    }
 
     function removeBackground() {
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -131,4 +153,4 @@
       link.click();
     }
   </script></body>
-  </html>
+</html>
